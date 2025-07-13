@@ -1,10 +1,5 @@
 // script.js
-</head>
-<body>
-  <h1>Malla Interactiva - Ingeniería en Biotecnología Molecular</h1>
-  <div class="malla" id="malla"></div>
-
-  <script>
+<script>
     const ramosPorSemestre = [
       ["mate1", "quim1", "bio1", "zoo"],
       ["mate2", "quim2", "fisica", "vegetal"],
