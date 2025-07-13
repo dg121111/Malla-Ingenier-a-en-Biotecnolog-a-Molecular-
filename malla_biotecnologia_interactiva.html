@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Interactiva - Ingeniería en Biotecnología Molecular UCH</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: sans-serif;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .anio {
+      margin-bottom: 40px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .anio-titulo {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      padding: 8px 20px;
+      width: fit-content;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .malla {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .semestre {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 180px;
+      align-items: center;
+    }
+
+    .titulo-semestre {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .ramo {
+      background-color: #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+      cursor: not-allowed;
+      color: #666;
+      transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.3s;
+      user-select: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      width: 100%;
+    }
+
+    .ramo:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .ramo.activo {
+      background-color: #ccc;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .ramo.aprobado {
+      text-decoration: line-through;
+      background-color: #999;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva - Ingeniería en Biotecnología Molecular UCH</h1>
+  <div id="contenedor-malla"></div>
+
+  <script>
+    const ramosPorSemestre = [
+      ["mate1", "quim1", "bio1", "zoo"],
+      ["mate2", "quim2", "fisica", "vegetal"],
+      ["mate3", "optica", "organica", "intro", "Acui"],
+      ["mate4", "bioq", "termo", "ingles1", "CFG1"],
+      ["gene", "microbio", "bioesta", "cine"],
+      ["bio_mol", "fisio", "tallerge", "elec", "CFG2"],
+      ["biotec", "instru", "fisioge", "eco"],
+      ["inmuno", "microeco", "fisioveg", "opti", "ingles2", "bioet"],
+      ["microin", "biotecmed", "opera", "tallerbio", "patente", "Uni"],
+      ["eva", "semi"]
+    ];
+
+    const ramos = [
+      { id: "mate1", nombre: "Matemáticas I", prereq: [] },
+      { id: "quim1", nombre: "Química General I", prereq: [] },
+      { id: "bio1", nombre: "Biología Celular", prereq: [] },
+      { id: "zoo", nombre: "Zoología", prereq: [] },
+      { id: "mate2", nombre: "Matemáticas II", prereq: ["mate1"] },
+      { id: "quim2", nombre: "Química General II", prereq: ["quim1"] },
+      { id: "fisica", nombre: "Introducción a la Mecánica", prereq: ["mate1"] },
+      { id: "vegetal", nombre: "Biología Vegetal", prereq: [] },
+      { id: "mate3", nombre: "Álgebra Lineal y Cálculo Vectorial", prereq: ["mate2"] },
+      { id: "optica", nombre: "Óptica y Electromagnetismo", prereq: ["fisica"] },
+      { id: "organica", nombre: "Química Orgánica", prereq: ["quim2"] },
+      { id: "intro", nombre: "Introducción a la Ingeniería Genética", prereq: [] },
+      { id: "Acui", nombre: "Acuicultura", prereq: [] },
+      { id: "mate4", nombre: "Ecuaciones Diferenciales", prereq: ["mate3"] },
+      { id: "bioq", nombre: "Bioquímica", prereq: ["bio1", "organica"] },
+      { id: "termo", nombre: "Termodinámica", prereq: ["quim2", "optica", "mate2"] },
+      { id: "ingles1", nombre: "Inglés Científico I", prereq: [] },
+      { id: "CFG1", nombre: "CFG I", prereq: [] },
+      { id: "gene", nombre: "Genética", prereq: ["bioq"] },
+      { id: "microbio", nombre: "Microbiología", prereq: ["bioq"] },
+      { id: "bioesta", nombre: "Bioestadística", prereq: ["mate1"] },
+      { id: "cine", nombre: "Cinética y Electroquímica", prereq: ["termo", "mate4"] },
+      { id: "bio_mol", nombre: "Biología Molecular", prereq: ["microbio", "gene"] },
+      { id: "fisio", nombre: "Fisioquímica Macromolecular", prereq: ["bioq", "cine"] },
+      { id: "tallerge", nombre: "Taller Ingeniería Genética", prereq: ["gene"] },
+      { id: "elec", nombre: "Electivo Especialidad", prereq: [] },
+      { id: "CFG2", nombre: "CFG II", prereq: [] },
+      { id: "biotec", nombre: "Biotecnología", prereq: ["bio_mol"] },
+      { id: "instru", nombre: "Instrumentación", prereq: ["fisio"] },
+      { id: "fisioge", nombre: "Fisiología General", prereq: ["bioq"] },
+      { id: "eco", nombre: "Ecología Microbiana", prereq: ["gene"] },
+      { id: "inmuno", nombre: "Inmunología", prereq: ["bio_mol"] },
+      { id: "microeco", nombre: "Microeconomía", prereq: ["mate2"] },
+      { id: "fisioveg", nombre: "Fisiología Vegetal", prereq: ["bio_mol"] },
+      { id: "opti", nombre: "Optimización", prereq: ["mate4"] },
+      { id: "ingles2", nombre: "Inglés Científico II", prereq: ["ingles1"] },
+      { id: "bioet", nombre: "Bioética", prereq: ["gene"] },
+      { id: "microin", nombre: "Microbiología Industrial", prereq: ["microbio"] },
+      { id: "biotecmed", nombre: "Biotecnología Médica", prereq: ["bio_mol"] },
+      { id: "opera", nombre: "Operaciones Unitarias", prereq: ["opti"] },
+      { id: "tallerbio", nombre: "Taller Biotecnología Vegetal", prereq: ["fisioveg"] },
+      { id: "patente", nombre: "Patentes y Legislación", prereq: ["tallerge"] },
+      { id: "Uni", nombre: "Unidad de Investigación", prereq: [] },
+      { id: "eva", nombre: "Evaluación de Proyectos", prereq: [] },
+      { id: "semi", nombre: "Seminario de Título", prereq: [] },
+    ];
+
+    const container = document.getElementById("contenedor-malla");
+
+    for (let i = 0; i < ramosPorSemestre.length; i += 2) {
+      const anio = document.createElement("div");
+      anio.className = "anio";
+
+      const titulo = document.createElement("div");
+      titulo.className = "anio-titulo";
+      titulo.textContent = `${i / 2 + 1}º Año`;
+      anio.appendChild(titulo);
+
+      const fila = document.createElement("div");
+      fila.className = "malla";
+
+      for (let j = 0; j < 2; j++) {
+        const idx = i + j;
+        if (ramosPorSemestre[idx]) {
+          const cont = document.createElement("div");
+          cont.className = "semestre";
+
+          const tituloSem = document.createElement("div");
+          tituloSem.className = "titulo-semestre";
+          tituloSem.textContent = `${idx + 1}º Semestre`;
+          cont.appendChild(tituloSem);
+
+          ramosPorSemestre[idx].forEach(id => {
+            const ramo = ramos.find(r => r.id === id);
+            const div = document.createElement("div");
+            div.className = "ramo";
+            div.id = ramo.id;
+            div.innerText = ramo.nombre;
+            if (ramo.prereq.length === 0) {
+              div.classList.add("activo");
+              div.onclick = () => toggleAprobado(div, ramo.id);
+            }
+            cont.appendChild(div);
+          });
+          fila.appendChild(cont);
+        }
+      }
+
+      anio.appendChild(fila);
+      container.appendChild(anio);
+    }
+
+    function toggleAprobado(elemento, id) {
+      elemento.classList.toggle("aprobado");
+      actualizarDisponibilidad();
+    }
+
+    function actualizarDisponibilidad() {
+      ramos.forEach(ramo => {
+        const elem = document.getElementById(ramo.id);
+        if (!elem.classList.contains("aprobado")) {
+          const desbloquear = ramo.prereq.every(pre => {
+            const preElem = document.getElementById(pre);
+            return preElem && preElem.classList.contains("aprobado");
+          });
+          if (desbloquear && !elem.classList.contains("activo")) {
+            elem.classList.add("activo");
+            elem.onclick = () => toggleAprobado(elem, ramo.id);
+            elem.style.cursor = "pointer";
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
