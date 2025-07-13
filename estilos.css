@@ -27,7 +27,7 @@
     }
 
     .ramo {
-      background-color: #eee;
+      background-color: #eee
       border-radius: 6px;
       padding: 10px;
       text-align: center;
@@ -39,17 +39,17 @@
     }
 
     .ramo.activo {
-      background-color: #d0e9ff;
+      background-color: #dcdcdc;
       color: #000;
       cursor: pointer;
     }
 
     .ramo.aprobado {
       text-decoration: line-through;
-      background-color: #b0ffb0;
+      background-color: #a7a7a7;
     }
   </style>
 </head>
 <body>
-  <h1>Malla Interactiva - Ingeniería en Biotecnología Molecular</h1>
+  <h1>Malla Interactiva - Ingeniería en Biotecnología Molecular UCH</h1>
   <div class="malla" id="malla"></div>
