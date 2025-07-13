@@ -11,9 +11,23 @@
     }
 
     .malla {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .semestre {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
+      min-width: 180px;
+    }
+
+    .titulo-semestre {
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 5px;
     }
 
     .ramo {
@@ -45,6 +59,19 @@
   <div class="malla" id="malla"></div>
 
   <script>
+    const ramosPorSemestre = [
+      ["mate1", "quim1", "bio1", "zoo"],
+      ["mate2", "quim2", "fisica", "vegetal"],
+      ["mate3", "optica", "organica", "intro", "Acui"],
+      ["mate4", "bioq", "termo", "ingles1", "CFG1"],
+      ["gene", "microbio", "bioesta", "cine"],
+      ["bio_mol", "fisio", "tallerge", "elec", "CFG2"],
+      ["biotec", "instru", "fisioge", "eco"],
+      ["inmuno", "microeco", "fisioveg", "opti", "ingles2", "bioet"],
+      ["microin", "biotecmed", "opera", "tallerbio", "patente", "Uni"],
+      ["eva", "semi"]
+    ];
+
     const ramos = [
       { id: "mate1", nombre: "Matemáticas I", prereq: [] },
       { id: "quim1", nombre: "Química General I", prereq: [] },
@@ -60,25 +87,25 @@
       { id: "intro", nombre: "Introducción a la Ingeniería Genética", prereq: [] },
       { id: "Acui", nombre: "Acuicultura", prereq: [] },
       { id: "mate4", nombre: "Métodos y Aplicaciones de las Ecuaciones Diferenciales", prereq: ["mate3"] },
-      { id: "bioq", nombre: "Bioquímica", prereq: ["bio1""organica"] },
-      { id: "termo", nombre: "Termodinámica", prereq: ["quim2""optica""mate2"] },
+      { id: "bioq", nombre: "Bioquímica", prereq: ["bio1", "organica"] },
+      { id: "termo", nombre: "Termodinámica", prereq: ["quim2", "optica", "mate2"] },
       { id: "ingles1", nombre: "Inglés Cientifico I", prereq: [] },
-      { id: "CFG1", nombre: "CFG I", prereq: [] },
+      { id: "CFG1", nombre: "Curso Formación General I", prereq: [] },
       { id: "gene", nombre: "Genética", prereq: ["bioq"] },
       { id: "microbio", nombre: "Microbiología", prereq: ["bioq"] },
       { id: "bioesta", nombre: "Bioestadística", prereq: ["mate1"] },
-      { id: "cine", nombre: "Cinética y Electroquímica", prereq: ["termo""mate4"] },
-      { id: "bio_mol", nombre: "Biología Molecular", prereq: ["microbio""gene"] },
-      { id: "fisio", nombre: "Fisioquímica Macromolecular", prereq: ["bioq""cine"] },
+      { id: "cine", nombre: "Cinética y Electroquímica", prereq: ["termo", "mate4"] },
+      { id: "bio_mol", nombre: "Biología Molecular", prereq: ["microbio", "gene"] },
+      { id: "fisio", nombre: "Fisioquímica Macromolecular", prereq: ["bioq", "cine"] },
       { id: "tallerge", nombre: "Taller de Ingeniería Genética", prereq: ["gene"] },
       { id: "elec", nombre: "Electivo Especialidad o Unidad de Investigación Electiva", prereq: [] },
-      { id: "CFG2", nombre: "CFG II", prereq: [] },
+      { id: "CFG2", nombre: "Curso Formación General II", prereq: [] },
       { id: "biotec", nombre: "Biotecnología", prereq: ["bio_mol"] },
       { id: "instru", nombre: "Instrumentación", prereq: ["fisio"] },
       { id: "fisioge", nombre: "Fisiología General", prereq: ["bioq"] },
       { id: "eco", nombre: "Ecología Microbiana y Biotecnología Ambiental", prereq: ["gene"] },
       { id: "ingles2", nombre: "Inglés Cientifico II", prereq: ["ingles1"] },
-      { id: "inmuno", nombre: "Inmonología", prereq: ["bio_mol"] },
+      { id: "inmuno", nombre: "Inmunología", prereq: ["bio_mol"] },
       { id: "microeco", nombre: "Microeconomía", prereq: ["mate2"] },
       { id: "fisioveg", nombre: "Fisiología Vegetal", prereq: ["bio_mol"] },
       { id: "opti", nombre: "Optimización", prereq: ["mate4"] },
@@ -95,17 +122,28 @@
 
     const container = document.getElementById("malla");
 
-    function crearRamo(ramo) {
-      const div = document.createElement("div");
-      div.className = "ramo";
-      div.id = ramo.id;
-      div.innerText = ramo.nombre;
-      if (ramo.prereq.length === 0) {
-        div.classList.add("activo");
-        div.onclick = () => toggleAprobado(div, ramo.id);
-      }
-      container.appendChild(div);
-    }
+    ramosPorSemestre.forEach((semestre, i) => {
+      const cont = document.createElement("div");
+      cont.className = "semestre";
+      const titulo = document.createElement("div");
+      titulo.className = "titulo-semestre";
+      titulo.textContent = `${i + 1}º Semestre`;
+      cont.appendChild(titulo);
+
+      semestre.forEach(id => {
+        const ramo = ramos.find(r => r.id === id);
+        const div = document.createElement("div");
+        div.className = "ramo";
+        div.id = ramo.id;
+        div.innerText = ramo.nombre;
+        if (ramo.prereq.length === 0) {
+          div.classList.add("activo");
+          div.onclick = () => toggleAprobado(div, ramo.id);
+        }
+        cont.appendChild(div);
+      });
+      container.appendChild(cont);
+    });
 
     function toggleAprobado(elemento, id) {
       elemento.classList.toggle("aprobado");
@@ -128,9 +166,8 @@
         }
       });
     }
-
-    ramos.forEach(crearRamo);
   </script>
 </body>
 </html>
+
 
