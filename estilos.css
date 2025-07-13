@@ -1,1 +1,22 @@
+/* style.css */
+body {
+  font-family: sans-serif;
+  background: #f9f9f9;
+  padding: 2rem;
+}
+
+#malla-container {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr); /* 8 semestres */
+  gap: 10px;
+}
+
+.ramo {
+  background: #e0f7fa;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
