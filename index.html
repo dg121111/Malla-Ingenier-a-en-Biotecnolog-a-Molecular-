@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Malla Interactiva - Biotecnología Molecular</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+
+    .malla {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 10px;
+    }
+
+    .ramo {
+      background-color: #eee;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+      cursor: not-allowed;
+      color: #aaa;
+      transition: background-color 0.3s, color 0.3s;
+      user-select: none;
+    }
+
+    .ramo.activo {
+      background-color: #d0e9ff;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .ramo.aprobado {
+      text-decoration: line-through;
+      background-color: #b0ffb0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva - Ingeniería en Biotecnología Molecular</h1>
+  <div class="malla" id="malla"></div>
+
+  <script>
+    const ramos = [
+      { id: "mate1", nombre: "Matemáticas I", prereq: [] },
+      { id: "quim1", nombre: "Química General I", prereq: [] },
+      { id: "bio1", nombre: "Biología Celular", prereq: [] },
+      { id: "zoo", nombre: "Zoología", prereq: [] },
+      { id: "quim2", nombre: "Química General II", prereq: ["quim1"] },
+      { id: "mate2", nombre: "Matemáticas II", prereq: ["mate1"] },
+      { id: "fisica", nombre: "Introducción a la Mecánica", prereq: ["mate1"] },
+      { id: "vegetal", nombre: "Biología Vegetal", prereq: [] },
+      { id: "optica", nombre: "Óptica y Electromagnetismo", prereq: ["fisica"] },
+      { id: "bioq", nombre: "Bioquímica", prereq: ["quim2"] },
+      { id: "genetica", nombre: "Genética", prereq: ["bioq"] },
+      { id: "microbio", nombre: "Microbiología", prereq: ["bioq"] },
+      { id: "bio_mol", nombre: "Biología Molecular", prereq: ["microbio"] },
+      { id: "biotec", nombre: "Biotecnología", prereq: ["bio_mol"] }
+    ];
+
+    const container = document.getElementById("malla");
+
+    function crearRamo(ramo) {
+      const div = document.createElement("div");
+      div.className = "ramo";
+      div.id = ramo.id;
+      div.innerText = ramo.nombre;
+      if (ramo.prereq.length === 0) {
+        div.classList.add("activo");
+        div.onclick = () => toggleAprobado(div, ramo.id);
+      }
+      container.appendChild(div);
+    }
+
+    function toggleAprobado(elemento, id) {
+      elemento.classList.toggle("aprobado");
+      actualizarDisponibilidad();
+    }
+
+    function actualizarDisponibilidad() {
+      ramos.forEach(ramo => {
+        const elem = document.getElementById(ramo.id);
+        if (!elem.classList.contains("aprobado")) {
+          const desbloquear = ramo.prereq.every(pre => {
+            const preElem = document.getElementById(pre);
+            return preElem && preElem.classList.contains("aprobado");
+          });
+          if (desbloquear && !elem.classList.contains("activo")) {
+            elem.classList.add("activo");
+            elem.onclick = () => toggleAprobado(elem, ramo.id);
+            elem.style.cursor = "pointer";
+          }
+        }
+      });
+    }
+
+    ramos.forEach(crearRamo);
+  </script>
+</body>
+</html>
 
