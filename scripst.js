@@ -64,46 +64,45 @@
     const container = document.getElementById("contenedor-malla");
 
     for (let i = 0; i < ramosPorSemestre.length; i += 2) {
-      const anio = document.createElement("div");
-      anio.className = "anio";
+      const anio = Math.floor(i / 2) + 1;
+      const group = document.createElement("div");
+      group.className = "anio-group";
 
-      const titulo = document.createElement("div");
-      titulo.className = "anio-titulo";
-      titulo.textContent = `${i / 2 + 1}º Año`;
-      anio.appendChild(titulo);
+      const titulo = document.createElement("h2");
+      titulo.textContent = `${anio}º Año`;
+      group.appendChild(titulo);
 
       const fila = document.createElement("div");
       fila.className = "malla";
 
-      for (let j = 0; j < 2; j++) {
-        const idx = i + j;
-        if (ramosPorSemestre[idx]) {
-          const cont = document.createElement("div");
-          cont.className = "semestre";
+      for (let j = i; j <= i + 1 && j < ramosPorSemestre.length; j++) {
+        const semestre = ramosPorSemestre[j];
+        const cont = document.createElement("div");
+        cont.className = "semestre";
 
-          const tituloSem = document.createElement("div");
-          tituloSem.className = "titulo-semestre";
-          tituloSem.textContent = `${idx + 1}º Semestre`;
-          cont.appendChild(tituloSem);
+        const tituloSem = document.createElement("div");
+        tituloSem.className = "titulo-semestre";
+        tituloSem.textContent = `${j + 1}º Semestre`;
+        cont.appendChild(tituloSem);
 
-          ramosPorSemestre[idx].forEach(id => {
-            const ramo = ramos.find(r => r.id === id);
-            const div = document.createElement("div");
-            div.className = "ramo";
-            div.id = ramo.id;
-            div.innerText = ramo.nombre;
-            if (ramo.prereq.length === 0) {
-              div.classList.add("activo");
-              div.onclick = () => toggleAprobado(div, ramo.id);
-            }
-            cont.appendChild(div);
-          });
-          fila.appendChild(cont);
-        }
+        semestre.forEach(id => {
+          const ramo = ramos.find(r => r.id === id);
+          const div = document.createElement("div");
+          div.className = "ramo";
+          div.id = ramo.id;
+          div.innerText = ramo.nombre;
+          if (ramo.prereq.length === 0) {
+            div.classList.add("activo");
+            div.onclick = () => toggleAprobado(div, ramo.id);
+          }
+          cont.appendChild(div);
+        });
+
+        fila.appendChild(cont);
       }
 
-      anio.appendChild(fila);
-      container.appendChild(anio);
+      group.appendChild(fila);
+      container.appendChild(group);
     }
 
     function toggleAprobado(elemento, id) {
